@@ -19,7 +19,7 @@ let uiController = (function () {
             return {
                 type: document.querySelector(domStrings.inputType).value,
                 description: document.querySelector(domStrings.inputDescription).value,
-                value: document.querySelector(domStrings.inputValue).value
+                value: parseFloat(document.querySelector(domStrings.inputValue).value)
             }
         },
 
@@ -46,10 +46,10 @@ let uiController = (function () {
         clearFields: function () {
             let fields, fieldsArr;
             fields = document.querySelectorAll(domStrings.inputDescription + ', ' + domStrings.inputValue);
-            
+
             // Fields retorna una lista, utilizamos un truco para poder usar el metodo slice (ya que no es un array).
             fieldsArr = Array.prototype.slice.call(fields);
-            
+
             // Iteramos el nuevo array con forEach
             fieldsArr.forEach(function (current, index, array) {
                 current.value = "";
@@ -134,14 +134,17 @@ let controller = (function (budgetCtrl, uiCtrl) {
         // 1. Get input values
         let input = uiCtrl.getInputValues();
 
-        // 2. Add new item to the budget controller
-        let newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+        // If para no permitir campos vacíos 
+        if (input.description !== "" && !isNaN(input.value)) {
+            // 2. Add new item to the budget controller
+            let newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
-        // 3. Add the item to the UI
-        uiCtrl.addListItem(newItem, input.type);
+            // 3. Add the item to the UI
+            uiCtrl.addListItem(newItem, input.type);
 
-        // 4. Clear the fields
-        uiCtrl.clearFields()
+            // 4. Clear the fields
+            uiCtrl.clearFields()
+        }
     }
 
     return {
